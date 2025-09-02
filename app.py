@@ -85,12 +85,16 @@ if st.button("Submit"):
         top=3,
     )
 
+    for doc in results:
+        st.write(doc)  # This will let you see the raw fields returned
+
     results_list = [
-        doc[KB_FIELDS_SOURCEPAGE]
+        (doc.get(KB_FIELDS_SOURCEPAGE) or doc.get("sourcefile") or "N/A")
         + ": "
-        + doc[KB_FIELDS_CONTENT].replace("\n", "").replace("\r", "")
+        + (doc.get(KB_FIELDS_CONTENT, "") or "").replace("\n", "").replace("\r", "")
         for doc in results
     ]
+
     content = "\n".join(results_list)
 
     references = [result.split(":")[0] for result in results_list]
