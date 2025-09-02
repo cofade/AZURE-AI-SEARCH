@@ -1,27 +1,16 @@
-import openai
-from config_openai import *
 from openai import AzureOpenAI
 
+from config_openai import *
+
 client = AzureOpenAI(
-  azure_endpoint = endpoint, 
-  api_key=key,  
-  api_version="2023-05-15"
+    azure_endpoint=endpoint,
+    api_key=AZURE_OPENAI_API_KEY,  # from .env!
+    api_version="2023-05-15",
 )
 
-def create_prompt(context,query):
-    header = "What is Diploblastic and Triploblastic Organisation"
-    return header + context + "\n\n" + query + "\n"
 
-
-def generate_answer(conversation):
-    response = client.chat.completions.create(
-    model=deployment_id_gpt4,
-    messages=conversation,
-    temperature=0,
-    max_tokens=1000,
-    top_p=1,
-    frequency_penalty=0,
-    presence_penalty=0,
-    stop = [' END']
+def get_query_embedding(text):
+    embedding_response = client.embeddings.create(
+        input=[text], model=AZURE_EMBEDDING_DEPLOYMENT  # from .env!
     )
-    return (response.choices[0].message.content).strip()
+    return embedding_response.data[0].embedding
